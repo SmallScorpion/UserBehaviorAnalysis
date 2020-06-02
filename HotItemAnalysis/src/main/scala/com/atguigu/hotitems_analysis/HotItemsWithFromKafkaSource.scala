@@ -1,15 +1,19 @@
 package com.atguigu.hotitems_analysis
 
+import java.util.Properties
+
 import com.atguigu.bean.{ItemViewCount, UserBehavior}
 import com.atguigu.function.{MyCountAggFunction, MyTopNHotItems, MyWindowResultFunction}
+import org.apache.flink.api.common.serialization.SimpleStringSchema
 import org.apache.flink.streaming.api.TimeCharacteristic
 import org.apache.flink.streaming.api.scala._
 import org.apache.flink.streaming.api.windowing.time.Time
+import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer
 
 /**
- * 热门商品统计
+ * 将 文件中的数据 经过读取发送到Kafka，再消费Kafka的数据
  */
-object HotItems {
+object HotItemsWithFromKafkaSource {
   def main(args: Array[String]): Unit = {
 
     // 创建一个流处理执行环境
@@ -17,8 +21,13 @@ object HotItems {
     env.setStreamTimeCharacteristic( TimeCharacteristic.EventTime ) // 开启事件事件
     env.setParallelism(1) // 设置并行度为1
 
-    // 从文件读取数据
-    val inputDStream: DataStream[String] = env.readTextFile("D:\\MyWork\\WorkSpaceIDEA\\UserBehaviorAnalysis\\HotItemAnalysis\\src\\main\\resources\\UserBehavior.csv")
+    // 配置Kafka消费者， 读取hotitems的数据输出到控制台
+    val properties: Properties = new Properties()
+    properties.setProperty("bootstrap.servers", "hadoop102:9092")
+    properties.setProperty("group.id", "consumer-group")
+    // 从kafka读取数据
+    val inputDStream: DataStream[String] = env
+      .addSource( new FlinkKafkaConsumer[String]("hotitems", new SimpleStringSchema(), properties) )
 
     // 转换成样例类
     val dataDStream: DataStream[UserBehavior] = inputDStream
