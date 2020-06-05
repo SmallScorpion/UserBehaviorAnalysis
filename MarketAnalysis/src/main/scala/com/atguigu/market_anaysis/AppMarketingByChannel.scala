@@ -1,9 +1,9 @@
-package com.atguigu.market_analysis
+package com.atguigu.market_anaysis
 
 import com.atguigu.bean.{MarketingByChannelCount, MarketingUserBehavior}
 import com.atguigu.function.{MarketingByChannelCountResult, SimulatedEventSource}
 import org.apache.flink.streaming.api.TimeCharacteristic
-import org.apache.flink.streaming.api.scala._
+import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment}
 import org.apache.flink.streaming.api.windowing.time.Time
 
 object AppMarketingByChannel {

@@ -1,9 +1,9 @@
-package com.atguigu.market_analysis
+package com.atguigu.market_anaysis
 
 import com.atguigu.bean.{AdClickEvent, AdCountViewByProvince, BlackListWarning}
 import com.atguigu.function.{FilterBlackListUser, MyAdCountAgg, MyAdCountByProvinceResult}
 import org.apache.flink.streaming.api.TimeCharacteristic
-import org.apache.flink.streaming.api.scala._
+import org.apache.flink.streaming.api.scala.{DataStream, OutputTag, StreamExecutionEnvironment}
 import org.apache.flink.streaming.api.windowing.time.Time
 
 object AdCountByProvince {
