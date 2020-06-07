@@ -29,13 +29,15 @@ case class LoginFailDetectWarning_test(maxFailTimes: Int) extends KeyedProcessFu
         ctx.timerService().registerEventTimeTimer(ts)
         timerTsState.update(ts)
         // 如果定时器不为0 且长度大于等于传入值，且时间差大于两秒
-      }else if(loginFailList.length >= maxFailTimes && times >= 2){
+      }else if(loginFailList.length >= maxFailTimes && times <= 2){
         out.collect(LoginFailWarning(
           ctx.getCurrentKey,
           loginFailList.head.timestamp,
           loginFailList.last.timestamp,
-          "login fail in 2s for " + loginFailList.length + " times."
+          "login fail in " + times + " for " + loginFailList.length + " times."
         ))
+        loginFailListState.clear()
+        timerTsState.clear()
       }
     } else {
 
